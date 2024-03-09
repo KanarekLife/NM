@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 def calculate_ema(n: int, data: pd.DataFrame, from_col: str, to_col: str) -> pd.DataFrame:
     """
@@ -82,3 +83,97 @@ def simulate(data: pd.DataFrame, stocks: int) -> float:
         money = stocks * row.VALUE
         stocks = 0
     return money - would_be_money
+
+def get_sells_and_their_profit(data: pd.DataFrame, stocks: int) -> pd.DataFrame:
+    money = 0
+    last_bought_for = np.nan
+    stocks_purchased = -1
+    result = pd.DataFrame(columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])
+    i = 0
+    
+    for row in data.itertuples():
+        if row.ACTION == 'BUY':
+            if money > 0:
+                stocks = money // row.VALUE
+                stocks_purchased = money // row.VALUE
+                money -= stocks * row.VALUE
+                last_bought_for = row.VALUE
+        elif row.ACTION == 'SELL':
+            if stocks > 0:
+                money += stocks * row.VALUE
+                diff = row.VALUE * stocks - stocks_purchased * last_bought_for
+                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+    
+    if stocks > 0:
+        money = stocks * row.VALUE
+        diff = row.VALUE * stocks - stocks_purchased * last_bought_for
+        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+        stocks = 0
+    
+    result = result.rename(columns={'DATE': 'Data', 'LAST_BOUGHT_FOR': 'Cena zakupu', 'SELL_VALUE': 'Cena sprzedaży', 'PROFIT': 'Zysk'})
+    return result
+
+def simulate_with_x_day_buy_delay(data: pd.DataFrame, stocks: int, x = 2) -> float:
+    """
+    Simulates a trading strategy and calculates the profit or loss.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the preprocessed data.
+        stocks (int): The number of stocks to trade with.
+
+    Returns:
+        float: The profit or loss from the trading strategy.
+    """
+    would_be_money = data.iloc[0, 1] * stocks
+    money = 0
+    none_strike = 0
+    for row in data.itertuples():
+        if row.ACTION == 'BUY' and none_strike >= x:
+            none_strike = 0
+            if money > 0:
+                stocks = money // row.VALUE
+                money -= stocks * row.VALUE
+        elif row.ACTION == 'SELL':
+            none_strike = 0
+            if stocks > 0:
+                money += stocks * row.VALUE
+                stocks = 0
+        elif row.ACTION == 'NONE':
+            none_strike += 1
+    if stocks > 0:
+        money = stocks * row.VALUE
+        stocks = 0
+    return money - would_be_money
+
+def get_sells_and_their_profit_with_2_day_buy_delay(data: pd.DataFrame, stocks: int, x = 2) -> pd.DataFrame:
+    money = 0
+    last_bought_for = np.nan
+    stocks_purchased = -1
+    result = pd.DataFrame(columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])
+    none_strike = 0
+    
+    for row in data.itertuples():
+        if row.ACTION == 'BUY' and none_strike >= x:
+            none_strike = 0
+            if money > 0:
+                stocks = money // row.VALUE
+                stocks_purchased = money // row.VALUE
+                money -= stocks * row.VALUE
+                last_bought_for = row.VALUE
+        elif row.ACTION == 'SELL':
+            none_strike = 0
+            if stocks > 0:
+                money += stocks * row.VALUE
+                diff = row.VALUE * stocks - stocks_purchased * last_bought_for
+                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+        elif row.ACTION == 'NONE':
+            none_strike += 1
+    
+    if stocks > 0:
+        money = stocks * row.VALUE
+        diff = row.VALUE * stocks - stocks_purchased * last_bought_for
+        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+        stocks = 0
+    
+    result = result.rename(columns={'DATE': 'Data', 'LAST_BOUGHT_FOR': 'Cena zakupu', 'SELL_VALUE': 'Cena sprzedaży', 'PROFIT': 'Zysk'})
+    return result
