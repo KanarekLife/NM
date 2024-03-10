@@ -9,4 +9,5 @@ function plot_circles(a, circles, index_number)
             plot_circle(current_row(3), current_row(1), current_row(2))
         end
     end
+    hold off
 end

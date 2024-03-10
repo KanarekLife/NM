@@ -8,4 +8,7 @@ r_max = 10;
 
 [circles, index_number, circle_areas] = generate_circles(a, r_max, n_max);
 plot_circles(a, circles, index_number);
-% print -dpng zadanie1.png
+print -dpng zadanie1.png
+
+plot_circle_areas(circle_areas)
+print -dpng zadanie3.png
