@@ -8,6 +8,20 @@
   underline(it)
 }
 
+#set ref(supplement: it => {
+  it.supplement.text.replace("Table", "Tabela")
+})
+
+#show figure.caption: it => [
+  #if it.supplement == [Figure] [
+    Rysunek  #it.counter.display()#it.separator #it.body
+  ] else if it.supplement == [Table] [
+    Tabela  #it.counter.display()#it.separator #it.body
+  ] else [
+    #it.supplement #it.numbering#it.separator #it.body
+  ]
+]
+
 #align(center)[
   = Analiza wskaźnika giełdowego MACD
   #stack(

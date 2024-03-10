@@ -102,12 +102,12 @@ def get_sells_and_their_profit(data: pd.DataFrame, stocks: int) -> pd.DataFrame:
             if stocks > 0:
                 money += stocks * row.VALUE
                 diff = row.VALUE * stocks - stocks_purchased * last_bought_for
-                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, round(diff, 2)]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
     
     if stocks > 0:
         money = stocks * row.VALUE
         diff = row.VALUE * stocks - stocks_purchased * last_bought_for
-        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, round(diff, 2)]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
         stocks = 0
     
     result = result.rename(columns={'DATE': 'Data', 'LAST_BOUGHT_FOR': 'Cena zakupu', 'SELL_VALUE': 'Cena sprzedaży', 'PROFIT': 'Zysk'})
@@ -165,14 +165,14 @@ def get_sells_and_their_profit_with_2_day_buy_delay(data: pd.DataFrame, stocks: 
             if stocks > 0:
                 money += stocks * row.VALUE
                 diff = row.VALUE * stocks - stocks_purchased * last_bought_for
-                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+                result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, round(diff, 2)]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
         elif row.ACTION == 'NONE':
             none_strike += 1
     
     if stocks > 0:
         money = stocks * row.VALUE
         diff = row.VALUE * stocks - stocks_purchased * last_bought_for
-        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, diff]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
+        result = pd.concat([result, pd.DataFrame([[row.DATE, last_bought_for, row.VALUE, round(diff, 2)]], columns=['DATE', 'LAST_BOUGHT_FOR', 'SELL_VALUE', 'PROFIT'])], ignore_index=True)
         stocks = 0
     
     result = result.rename(columns={'DATE': 'Data', 'LAST_BOUGHT_FOR': 'Cena zakupu', 'SELL_VALUE': 'Cena sprzedaży', 'PROFIT': 'Zysk'})
