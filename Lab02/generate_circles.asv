@@ -60,14 +60,8 @@ function [circles, index_number, circle_areas] = generate_circles(a, r_max, n_ma
             end
         end
     end
-    if mod(floor(mod(index_number, 100) / 10), 2) == 0
-        circle_areas = zeros(1, n_max);
-        ssum = 0;
-        for i = 1:size(circles)
-            current_row = circles(i,:);
-            ssum = ssum + pi * (current_row(3))^2;
-            circle_areas(i) = ssum;
-        end
+    if mod(mod(index_number, 100) / 10, 2) == 0
+        circle_areas = zero
     else
         % TBD
     end
