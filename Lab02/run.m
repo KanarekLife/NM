@@ -12,3 +12,6 @@ print -dpng zadanie1.png
 
 plot_circle_areas(circle_areas)
 print -dpng zadanie3.png
+
+plot_counts_mean(counts_mean)
+print -dpng zadanie5.png
