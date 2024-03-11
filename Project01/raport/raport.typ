@@ -149,7 +149,7 @@ W podsumowaniu ogólnym algorytm ten przynosi straty w porównaniu do jego prost
 
 == 5. Wnioski
 
-W przypadku akcji CD Projekt RED S.A. wskaźnik MACD nie był w stanie przewidzieć i zaregować na gwałtowne spadki wartości cen akcji spowodowanych decyzjami biznesowymi. Najbardziej widoczne jest to w okresie grunia 2020, kiedy wskaźnikowi nieudało się zareagowoać w porę na gwałtowny spadek cen akcji i zarekomendował on sprzedaż akcji już po spadku poniżej ceny zakupu. Podobną sytuację możemy zauważyć w styczniu 2021, kiedy to akcje gwałtownie wystrzeliły w górę i była szansa na spory zysk, ale wskaźnik zarekomendował sprzedaż dopiero po jego spadnięciu. Podobne sytuacje można zaobserować w cały okresie od maja 2021 do końca analizowanych danych, co wskazuje na słabość wskaźnika wobec gwałtownych zmian.
+W przypadku akcji CD Projekt RED S.A. wskaźnik MACD nie był w stanie przewidzieć i zaregować na gwałtowne spadki wartości cen akcji spowodowanych decyzjami biznesowymi. Najbardziej widoczne jest to w okresie grudnia 2020, kiedy wskaźnikowi nieudało się zareagowoać w porę na gwałtowny spadek cen akcji i zarekomendował on sprzedaż akcji już po spadku poniżej ceny zakupu. Podobną sytuację możemy zauważyć w styczniu 2021, kiedy to akcje gwałtownie wystrzeliły w górę i była szansa na spory zysk, ale wskaźnik zarekomendował sprzedaż dopiero po jego spadnięciu. Podobne sytuacje można zaobserować w cały okresie od maja 2021 do końca analizowanych danych, co wskazuje na słabość wskaźnika wobec gwałtownych zmian.
 
 Ta sama sytacja występuje w przypadku kursu EURO, aczkolwiek z uwagi na ogólny wzrost wartości waluty przez cały badany okres oraz powolne zmiany wartości udało się wskaźnikowi uzyskać zysk dla obu algorytmów.
 
