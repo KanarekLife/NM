@@ -124,10 +124,30 @@ Wykres prezentuje wartości wskaźnika MACD dla kursu walutowego EURO/PLN w okre
 
 W przypadku kursu walutowego EURO/PLN wskaźnik MACD działał lepiej niż w przypadku akcji CD Projekt S.A. Wskaźnik ten poprawnie wskazywał najlepsze momenty na zakup i sprzedaż waluty. W okresach dużych wahań cen wskaźnik ten nie radził sobie tak dobrze jak w przypadku spokojnych okresów (można zauważyć duży zarobek w momencie gwałtownych skoków ceny EURO), aczkolwiek w długim okresie czasu przyniósł on zyski dzięki ogólnemu "spokojowi" tego instrumentu finansowego.
 
+== 4. Analiza przykładowych transakcji i prezentacja problemów ze wskaźnikiem MACD
 
-== 4. Algorytm
+#figure(
+  image("macd-spoznienie-01.png"),
+  caption: [
+    Przykład spóźnienia się wskaźnika MACD w obliczu nagłego spadku wartości akcji CDP 26.11.2020 - 05.01.2021
+  ]
+)
 
-=== 4.1 Algorytm prosty
+#figure(
+  image("macd-spoznienie-02.png"),
+  caption: [
+    Przykład spóźnienia się wskaźnika MACD w obliczu nagłego spadku wartości akcji CDP 01.05.2022 - 10.06.2022
+  ]
+)
+
+W obu analizowanych sytuacjach pochodzących z wykresu cen akcji CD Projekt S.A. z nałożonymi sygnałami kupna i sprzedaży pochodzącymi ze wskaźnika MACD możemy zauważyć że wskaźnik ten nie radził sobie z gwałtownymi spadkami wartości akcji. W obu przypadkach wskaźnik zarekomendował sprzedaż akcji już po spadku poniżej ceny zakupu.
+
+W przypadku sytuacji w okresie 26.11.2020 - 05.01.2021 MACD rekomendował zakup akcji po cenie 371.83 PLN za sztukę oraz ich sprzedaż za 345.58 PLN prowadząc do *straty na poziomie 26.25 PLN za akcję*. W okresie 01.05.2022 - 10.06.2022 MACD rekomendował natomiast zakup akcji po cenie 113.01 PLN za sztukę oraz ich sprzedaż za 102.34 PLN prowadząc do *straty na poziomie 10.67 PLN za akcję*.
+
+
+== 5. Algorytm
+
+=== 5.1 Algorytm prosty
 
 Wykorzystajmy wskaźnik MACD do stworzenia prostego algorytmu symulującego inwestowanie w instrument finansowy naszego wyboru. Po podaniu mu historycznych danych instrumentu oraz ilości posiadanych aktyw.
 
@@ -139,7 +159,7 @@ W przypadku kursu walutowego EURO/PLN w okresie 01.01.2020 r. - 27.09.2022 r. sy
 
 Okazuje się że najprosztsza implementacja algorytmu korzystająca ze wskaźnika MACD działa zbyt wolno by pozwolić nam na inwestowanie w aktywa szybko zmieniające swoją wartość na giełdzie, ale świetnie nadaje się do inwestycji w bardziej stabilne instrumenty typu waluty.
 
-=== 4.2 Potencjalne ulepszenie algorytmu
+=== 5.2 Potencjalne ulepszenie algorytmu
 
 Próbując udoskonalić podstawowy algorytm udało mi się znaleźć potencjalne ulepszenie. Dzięki dodaniu nowego warunku do naszego algorytmu aby dodkonywał on zakupu akcji tylko i wyłacznie wtedy kiedy przez co najmniej x ostatnich dni wskaźnik MACD nie przecinał się z SIGNAL. Dzięki ustawieniu parametru x na 2 dni [@cdp-x], udało mi się zwiększyć zysk z inwestycji w akcje CD Projekt S.A. o 6520 PLN. W przypadku inwestycji w walutę EURO/PLN najlepszy zysk udało się uzyskać dla x = 0 [@europln-x].
 
@@ -147,14 +167,11 @@ Podczas analizy tego rozwiązania udało mi się ustalić że zastosowanie takie
 
 W podsumowaniu ogólnym algorytm ten przynosi straty w porównaniu do jego prostszej wersji, aczkolwiek w niektórych latach przynosi on znaczące zyski.
 
-== 5. Wnioski
+== 6. Wnioski i Podsumowanie
 
 W przypadku akcji CD Projekt RED S.A. wskaźnik MACD nie był w stanie przewidzieć i zaregować na gwałtowne spadki wartości cen akcji spowodowanych decyzjami biznesowymi. Najbardziej widoczne jest to w okresie grudnia 2020, kiedy wskaźnikowi nieudało się zareagowoać w porę na gwałtowny spadek cen akcji i zarekomendował on sprzedaż akcji już po spadku poniżej ceny zakupu. Podobną sytuację możemy zauważyć w styczniu 2021, kiedy to akcje gwałtownie wystrzeliły w górę i była szansa na spory zysk, ale wskaźnik zarekomendował sprzedaż dopiero po jego spadnięciu. Podobne sytuacje można zaobserować w cały okresie od maja 2021 do końca analizowanych danych, co wskazuje na słabość wskaźnika wobec gwałtownych zmian.
 
 Ta sama sytacja występuje w przypadku kursu EURO, aczkolwiek z uwagi na ogólny wzrost wartości waluty przez cały badany okres oraz powolne zmiany wartości udało się wskaźnikowi uzyskać zysk dla obu algorytmów.
-
-
-== 6. Podsumowanie
 
 Wskaźnik MACD działa dobrze w przypadku inwestycji w aktywa długoterminowe jak waluty. W przypadku inwestycji w akcje oraz towary o zmiennej cenie nie nadąża on za rynkiem i przynosi straty. Ulepszenie algorytmu poprawia wyniki inwestycji w akcje oraz towary w niektórych latach, ale nadal przynosi straty w ogólnym rozrachunku.
 
