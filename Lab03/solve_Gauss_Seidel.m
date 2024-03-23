@@ -7,7 +7,7 @@ function [A,b,M,bm,x,err_norm,time,iterations,index_number] = solve_Gauss_Seidel
     err_norm = Inf;
     iterations = 0;
     tic;
-    while err_norm > 10^-2
+    while err_norm > 10^-10
         M = -1 * ((tril(A,-1)+diag(diag(A)))\triu(A,1));
         bm = (diag(diag(A)) + tril(A, -1))\b;
         x = M*x + bm;

@@ -12,6 +12,7 @@ for i=1:n
     [~,~,~,~,~,~,time,iterations,~] = solve_Gauss_Seidel(N(i));
     time_Gauss_Seidel(i) = time;
     iterations_Gauss_Seidel(i) = iterations;
+    disp(i)
 end
 
 plot_problem_5(N, time_Jacobi, time_Gauss_Seidel, iterations_Jacobi, iterations_Gauss_Seidel);

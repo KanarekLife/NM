@@ -14,4 +14,6 @@ function plot_problem_5(N,time_Jacobi,time_Gauss_Seidel,iterations_Jacobi,iterat
     xlabel 'Wielkość macierzy'
     ylabel 'Ilość iteracji'
     legend({'Jacobi', 'Gauss-Seidel'}, 'Location', 'eastoutside')
+    
+    saveas(gcf, 'zadanie5.png')
 end
