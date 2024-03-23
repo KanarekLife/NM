@@ -4,12 +4,15 @@ function [A,b,M,bm,x,err_norm,time,iterations,index_number] = solve_Gauss_Seidel
     [A,b] = generate_matrix(N, L1);
 
     x = ones(N, 1);
+    err_norm = Inf;
+    iterations = 0;
     tic;
-    for iterations=1:100
+    while err_norm > 10^-2
         M = -1 * ((tril(A,-1)+diag(diag(A)))\triu(A,1));
         bm = (diag(diag(A)) + tril(A, -1))\b;
         x = M*x + bm;
+        iterations = iterations + 1;
+        err_norm = norm(A*x-b);
     end
     time = toc;
-    err_norm = norm(A*x-b);
 end

@@ -5,7 +5,7 @@ time_Gauss_Seidel = 2*ones(1,n);
 iterations_Jacobi = 40*ones(1,n);
 iterations_Gauss_Seidel = 40*ones(1,n);
 
-for i=1:2
+for i=1:n
     [~,~,~,~,~,~,time,iterations,~] = solve_Jacobi(N(i));
     time_Jacobi(i) = time;
     iterations_Jacobi(i) = iterations;
