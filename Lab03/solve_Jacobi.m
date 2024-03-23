@@ -5,7 +5,7 @@ function [A,b,M,bm,x,err_norm,time,iterations,index_number] = solve_Jacobi(N)
 
     x = ones(N, 1);
     tic;
-    for iterations = 1:1000
+    for iterations = 1:100
         M = -1 * (diag(diag(A))\(tril(A, -1) + triu(A, 1)));
         % inv(A) * b == A\b
         bm = diag(diag(A))\ b;

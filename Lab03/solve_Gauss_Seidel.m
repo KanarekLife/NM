@@ -5,7 +5,7 @@ function [A,b,M,bm,x,err_norm,time,iterations,index_number] = solve_Gauss_Seidel
 
     x = ones(N, 1);
     tic;
-    for iterations=1:1000
+    for iterations=1:100
         M = -1 * ((tril(A,-1)+diag(diag(A)))\triu(A,1));
         bm = (diag(diag(A)) + tril(A, -1))\b;
         x = M*x + bm;
