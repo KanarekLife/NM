@@ -1,0 +1,14 @@
+Direct Method: 0.139680s
+Direct Method error: 0.000000000000723
+
+Jacobi Method: 0.302536s
+Jacobi Method error: Inf
+Jacobi Method iter: 617 / 1000
+
+GS Method: 56.147146s
+GS Method error: 64367347963.391143798828125
+GS Method iter: 1000 / 1000
+
+Obie metody iteracyjne (Jacobiego oraz Gaussa-Seidla) nie zbiegały się do poprawnego wyniku. Wykres błędu metody Jacobiego szybko wystrzeliwuje w górę, przez po 617 iteracjach osiąga wartości bliskie nieskończoności. Błąd metody Gaussa-Seidla rośnie zdecydowanie wolniej, jednakże jej wykres także nie zbiega się. Metoda Jacobiego wykonuje się bardzo szybko w przeciwieństwie do drugiej testowanej metody iteracyjnej.
+
+Dla podanego problemu najlepszy wynik uzyskała metoda bezpośrednia.
