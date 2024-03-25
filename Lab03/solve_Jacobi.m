@@ -7,10 +7,10 @@ function [A,b,M,bm,x,err_norm,time,iterations,index_number] = solve_Jacobi(N)
     err_norm = Inf;
     iterations = 0;
     tic;
+    M = -1 * (diag(diag(A))\(tril(A, -1) + triu(A, 1)));
+    % inv(A) * b == A\b
+    bm = diag(diag(A))\ b;
     while err_norm > 10^-10
-        M = -1 * (diag(diag(A))\(tril(A, -1) + triu(A, 1)));
-        % inv(A) * b == A\b
-        bm = diag(diag(A))\ b;
         x = M * x + bm;
         err_norm = norm(A*x-b);
         iterations = iterations + 1;

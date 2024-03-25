@@ -30,13 +30,11 @@ for i=1:max_iterations
     end
 end
 time = toc;
-jacobi_err_norms = resize(jacobi_err_norms, iterations);
 fprintf("Jacobi Method: %fs\n", time);
 fprintf("Jacobi Method error: %.15f\n", err_norm);
 fprintf("Jacobi Method iter: %d / %d\n", iterations, max_iterations);
 
-plot(jacobi_err_norms);
-ylim([-1000 1000])
+semilogy(jacobi_err_norms);
 hold on;
 
 % Gauss-Seidel
@@ -59,14 +57,12 @@ for i=1:max_iterations
     end
 end
 time = toc;
-gs_err_norms = resize(gs_err_norms, iterations);
 fprintf("GS Method: %fs\n", time);
 fprintf("GS Method error: %.15f\n", err_norm);
 fprintf("GS Method iter: %d / %d\n", iterations, max_iterations);
 
 
-plot(gs_err_norms);
-ylim([-1000 1000])
+semilogy(gs_err_norms);
 hold off;
 title 'Normy błędu metod iteracyjnych'
 xlabel 'Ilość iteracji'
