@@ -1,4 +1,4 @@
-from main import Matrix
+from matrix import Matrix
 from numpy.testing import assert_almost_equal
 
 def test_norm():
@@ -40,3 +40,27 @@ def test_matrix_subtraction():
     assert c[0][1] == 1
     assert c[1][0] == 2
     assert c[1][1] == 3
+
+def test_matrix_lu_decomposition():
+    a = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    l, u = a.lu_decomposition()
+
+    assert l[0][0] == 1
+    assert l[0][1] == 0
+    assert l[0][2] == 0
+    assert l[1][0] == 4
+    assert l[1][1] == 1
+    assert l[1][2] == 0
+    assert l[2][0] == 7
+    assert l[2][1] == 2
+    assert l[2][2] == 1
+
+    assert u[0][0] == 1
+    assert u[0][1] == 2
+    assert u[0][2] == 3
+    assert u[1][0] == 0
+    assert u[1][1] == -3
+    assert u[1][2] == -6
+    assert u[2][0] == 0
+    assert u[2][1] == 0
+    assert u[2][2] == 0
