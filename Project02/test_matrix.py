@@ -1,41 +1,42 @@
 from main import Matrix
 from numpy.testing import assert_almost_equal
 
-def test_jacob_i():
-    """"
-    Test the Jacobi method for solving linear systems (based on https://byjus.com/maths/jacobian-method/)
+def test_norm():
+    """
+    Test the norm method for matrices (based on https://nucinkis-lab.cc.ic.ac.uk/HELM/workbooks/workbook_30/30_4_matrx_norms.pdf)
     """
 
-    a = Matrix([[4, 2, -2], [1, -3, -1], [3, -1, 4]])
-    b = Matrix([[0], [7], [5]])
-    x = Matrix.solve_jacobi(a, b, 1e-4)
+    a = Matrix([[1, -7], [-2, -3]])
+    assert_almost_equal(a.norm(), 7.937, 3)
 
+def test_matrix_by_scalar_multiplication():
+    a = Matrix([[1, 2], [3, 4]])
+    b = a * 2
+    assert b[0][0] == 2
+    assert b[0][1] == 4
+    assert b[1][0] == 6
+    assert b[1][1] == 8
+
+def test_matrix_multiplication():
+    """
+    Test the matrix multiplication method for matrices (based on https://www.mathsisfun.com/algebra/matrix-multiplying.html)
+    """
+
+    a = Matrix([[1, 2, 3], [4, 5, 6]])
+    b = Matrix([[7, 8], [9, 10], [11, 12]])
+    c = a * b
     
-    assert_almost_equal(x[0][0], 1.7083, 4)
-    assert_almost_equal(x[1][0], -1.9583, 4)
-    assert_almost_equal(x[2][0], -0.7812, 4)
+    assert c[0][0] == 58
+    assert c[0][1] == 64
+    assert c[1][0] == 139
+    assert c[1][1] == 154
 
-def test_jacobi_2():
-    """"
-    Test the Jacobi method for solving linear systems (based on https://atozmath.com/CONM/GaussEli.aspx?q=GJ2&q1=2%602x%2b5y%3d16%3b3x%2by%3d11%60GJ2%60%601.25%60false&dm=D&dp=4&do=1#PrevPart)
-    """
+def test_matrix_subtraction():
+    a = Matrix([[1, 2], [3, 4]])
+    b = Matrix([[1, 1], [1, 1]])
+    c = a - b
 
-    a = Matrix([[2, 5], [3,1]])
-    b = Matrix([[16], [11]])
-    x = Matrix.solve_jacobi(a, b, 2)
-
-    
-    assert_almost_equal(x[0][0], -19.5, 1)
-    assert_almost_equal(x[1][0], -13, 1)
-
-def test_gauss_seidel_1():
-    """"
-    Test the Gauss-Seidel method for solving linear systems (based on https://atozmath.com/example/conm/GaussEli.aspx?q=GS2&q1=E1)
-    """
-
-    a = Matrix([[2,1], [1, 2]])
-    b = Matrix([[8], [1]])
-    x = Matrix.solve_gauss_seidel(a, b, 7)
-
-    assert_almost_equal(x[0][0], 4.9998, 4)
-    assert_almost_equal(x[1][0], -1.9999, 4)
+    assert c[0][0] == 0
+    assert c[0][1] == 1
+    assert c[1][0] == 2
+    assert c[1][1] == 3

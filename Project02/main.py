@@ -1,5 +1,6 @@
 import numpy as np
 from IPython.display import display, Math
+from typing import Union
 
 class Matrix:
     def __init__(self, matrix: list[list[int]]) -> None:
@@ -28,41 +29,73 @@ class Matrix:
         
         return display(Math(latex_code))
     
+    def norm(self) -> float:
+        result = 0
+        for row in self.matrix:
+            for element in row:
+                result += element ** 2
+        return result ** 0.5
+    
     def __getitem__(self, key: int) -> list[int]:
         return self.matrix[key]
     
-    def __rmul__(self, other: int) -> 'Matrix':
+    def __mul__(self, other: Union[int, 'Matrix']) -> 'Matrix':
         if type(other) == int:
             return Matrix([[other * element for element in row] for row in self.matrix])
+        elif type(other) == Matrix:
+            result = Matrix.new_matrix(self.rows, other.cols)
+            for i in range(self.rows):
+                for j in range(other.cols):
+                    result[i][j] = sum([self[i][k] * other[k][j] for k in range(self.cols)])
+            return result
         else:
             return NotImplemented
+        
+    def __sub__(self, other: 'Matrix') -> 'Matrix':
+        if self.rows != other.rows or self.cols != other.cols:
+            return NotImplemented
+        return Matrix([[self[i][j] - other[i][j] for j in range(self.cols)] for i in range(self.rows)])
     
     @staticmethod
     def new_vector(n: int) -> 'Matrix':
         return Matrix([[0] for _ in range(n)])
     
     @staticmethod
-    def norm(a: 'Matrix', b: 'Matrix', x: 'Matrix') -> 'Matrix':
-        return NotImplemented
+    def new_matrix(rows: int, cols: int) -> 'Matrix':
+        return Matrix([[0 for _ in range(cols)] for _ in range(rows)])
     
     @staticmethod
-    def solve_jacobi(a: 'Matrix', b: 'Matrix', iterations: int) -> 'Matrix':
+    def solve_jacobi(a: 'Matrix', b: 'Matrix', precision: float = 1e-9) -> 'Matrix':
         x = Matrix.new_vector(a.rows)
-        for _ in range(iterations):
+        err = float('inf')
+        iterations = 0
+        while err > precision:
             x_new = Matrix.new_vector(a.rows)
             for i in range(a.rows):
                 x_new[i][0] = (1/a[i][i]) * (b[i][0] - sum([a[i][j] * x[j][0] for j in range(a.rows) if j != i]))
+            new_err = ((a * x_new) - b).norm()
+            if err < new_err:
+                break
+            err = new_err
             x = x_new
+            iterations += 1
         return x
     
     @staticmethod
-    def solve_gauss_seidel(a: 'Matrix', b: 'Matrix', iterations: int) -> 'Matrix':
+    def solve_gauss_seidel(a: 'Matrix', b: 'Matrix', precision: float = 1e-9) -> 'Matrix':
         x = Matrix.new_vector(a.rows)
-        for _ in range(iterations):
+        err = float('inf')
+        iterations = 0
+        while err > precision:
             x_new = Matrix.new_vector(a.rows)
             for i in range(a.rows):
                 x_new[i][0] = (1/a[i][i]) * (b[i][0] - sum([a[i][j] * x_new[j][0] for j in range(i)]) - sum([a[i][j] * x[j][0] for j in range(i+1, a.rows)]))
+            new_err = ((a * x_new) - b).norm()
+            if err < new_err:
+                break
+            err = new_err
             x = x_new
+            err = ((a * x) - b).norm()
         return x
 
 def get_A(n: int, a1: int, a2: int, a3: int) -> Matrix:
@@ -93,3 +126,10 @@ def get_B(n: int, f: int) -> Matrix:
 # a.print()
 # b = get_B(n, (index_number % 10000 // 1000) + 1)
 # b.print()
+
+a = Matrix([[4, 2, -2], [1, -3, -1], [3, -1, 4]])
+b = Matrix([[0], [7], [5]])
+x = Matrix.solve_jacobi(a, b)
+
+result = a * x
+print(result)
