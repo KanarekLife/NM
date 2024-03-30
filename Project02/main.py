@@ -1,6 +1,6 @@
 import numpy as np
 from IPython.display import display, Math
-from typing import Union
+from typing import Union, Tuple
 
 class Matrix:
     def __init__(self, matrix: list[list[int]]) -> None:
@@ -65,7 +65,7 @@ class Matrix:
         return Matrix([[0 for _ in range(cols)] for _ in range(rows)])
     
     @staticmethod
-    def solve_jacobi(a: 'Matrix', b: 'Matrix', precision: float = 1e-9) -> 'Matrix':
+    def solve_jacobi(a: 'Matrix', b: 'Matrix', precision: float = 1e-9, verbose: bool = False) -> Tuple['Matrix', int, float]:
         x = Matrix.new_vector(a.rows)
         err = float('inf')
         iterations = 0
@@ -79,10 +79,12 @@ class Matrix:
             err = new_err
             x = x_new
             iterations += 1
-        return x
+            if verbose:
+                print(f'Iteration: {iterations}, Error: {err}')
+        return x, iterations, err
     
     @staticmethod
-    def solve_gauss_seidel(a: 'Matrix', b: 'Matrix', precision: float = 1e-9) -> 'Matrix':
+    def solve_gauss_seidel(a: 'Matrix', b: 'Matrix', precision: float = 1e-9, verbose: bool = False) -> Tuple['Matrix', int, float]:
         x = Matrix.new_vector(a.rows)
         err = float('inf')
         iterations = 0
@@ -96,7 +98,10 @@ class Matrix:
             err = new_err
             x = x_new
             err = ((a * x) - b).norm()
-        return x
+            iterations += 1
+            if verbose:
+                print(f'Iteration: {iterations}, Error: {err}')
+        return x,iterations, err
 
 def get_A(n: int, a1: int, a2: int, a3: int) -> Matrix:
     matrix = []
@@ -119,17 +124,3 @@ def get_B(n: int, f: int) -> Matrix:
     for i in range(1, n+1):
         matrix.append([np.sin(i * f)])
     return Matrix(matrix)
-
-# index_number = 193044
-# n = 900 + 10 * (index_number % 100 // 10) + (index_number % 10)
-# a = get_A(n, 5 + index_number % 1000 // 100, -1, -1)
-# a.print()
-# b = get_B(n, (index_number % 10000 // 1000) + 1)
-# b.print()
-
-a = Matrix([[4, 2, -2], [1, -3, -1], [3, -1, 4]])
-b = Matrix([[0], [7], [5]])
-x = Matrix.solve_jacobi(a, b)
-
-result = a * x
-print(result)
