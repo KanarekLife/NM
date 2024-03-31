@@ -99,6 +99,11 @@ class Matrix:
         if cols > 20:
             matrix = [row[:10] + ['...'] + row[-10:] for row in matrix]
             cols = 20
+
+        for row in range(rows):
+            for col in range(cols):
+                if type(matrix[row][col]) is float:
+                    matrix[row][col] = round(matrix[row][col], 4)
         
         latex_code = '\\begin{bmatrix}\n'
         for i in range(rows):
@@ -109,9 +114,44 @@ class Matrix:
         
         return latex_code
     
+    def to_typst(self) -> str:
+        """
+        Convert the matrix to Typst code for display purposes.
+        """
+        matrix = self.matrix
+        rows = self.rows
+        cols = self.cols
+        
+        if rows > 20:
+            matrix = matrix[:10] + [['dots.v'] * cols] + matrix[-10:]
+            rows = 20
+        if cols > 20:
+            matrix = [row[:10] + ['dots.h'] + row[-10:] for row in matrix]
+            cols = 20
+        if self.rows > 20 and self.cols > 20:
+            matrix[10][10] = 'dots.down'
+
+        for row in range(rows):
+            for col in range(cols):
+                if type(matrix[row][col]) is float:
+                    matrix[row][col] = round(matrix[row][col], 4)
+
+        typst_code = 'mat('
+        for i in range(rows):
+            for j in range(cols):
+                typst_code += str(matrix[i][j]) + ', ' if j < cols - 1 else str(matrix[i][j])
+            typst_code += ';\n'
+        typst_code += ')'
+        
+        return typst_code
+    
     @staticmethod
     def new_vector(n: int) -> 'Matrix':
         return Matrix([[0] for _ in range(n)])
+    
+    @staticmethod
+    def from_list(lst: list[int]) -> 'Matrix':
+        return Matrix([[element] for element in lst])
     
     @staticmethod
     def new_matrix(rows: int, cols: int, value: int = 0) -> 'Matrix':

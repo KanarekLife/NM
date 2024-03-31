@@ -10,7 +10,7 @@ def test_solve_lu_1():
     A = Matrix([[1, 1, 1], [3, 1, -3], [1, -2, -5]])
     B = Matrix([[1], [5], [10]])
 
-    x = solve_lu(A, B)
+    x, _ = solve_lu(A, B)
 
     assert x[0][0] == 6
     assert x[1][0] == -7
@@ -25,7 +25,7 @@ def test_solve_lu_2():
     A = Matrix([[6, 18, 3], [2, 12, 1], [4, 15, 3]])
     B = Matrix([[3], [19], [0]])
 
-    x = solve_lu(A, B)
+    x, _ = solve_lu(A, B)
 
     assert x[0][0] == -3
     assert x[1][0] == 3

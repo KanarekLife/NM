@@ -64,3 +64,9 @@ def test_matrix_lu_decomposition():
     assert u[2][0] == 0
     assert u[2][1] == 0
     assert u[2][2] == 0
+
+def test_from_list():
+    a = Matrix.from_list([1, 2, 3, 4])
+
+    assert a.cols == 1
+    assert a.rows == 4

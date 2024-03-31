@@ -1,5 +1,6 @@
 from matrix import Matrix
 from numpy import sin
+from IPython.display import display, Math
 
 def get_A(n: int, a1: int, a2: int, a3: int) -> Matrix:
     matrix = []
@@ -20,5 +21,8 @@ def get_A(n: int, a1: int, a2: int, a3: int) -> Matrix:
 def get_B(n: int, f: int) -> Matrix:
     matrix = []
     for i in range(1, n+1):
-        matrix.append([sin(i * f)])
+        matrix.append([float(sin(i * f))])
     return Matrix(matrix)
+
+def display_math(latex: str) -> None:
+    display(Math(latex))
