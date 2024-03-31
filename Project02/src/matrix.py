@@ -85,7 +85,7 @@ class Matrix:
         
         return Matrix([[self[i][j] - other[i][j] for j in range(self.cols)] for i in range(self.rows)])
     
-    def to_latex(self) -> str:
+    def to_latex(self, max_rows: int = 20, max_cols: int = 20, precision: int = 4) -> str:
         """
         Convert the matrix to LaTeX code for display purposes.
         """
@@ -93,17 +93,17 @@ class Matrix:
         rows = self.rows
         cols = self.cols
         
-        if rows > 20:
-            matrix = matrix[:10] + [['...'] * cols] + matrix[-10:]
-            rows = 20
-        if cols > 20:
-            matrix = [row[:10] + ['...'] + row[-10:] for row in matrix]
-            cols = 20
+        if rows > max_rows:
+            matrix = matrix[:max_rows//2] + [['...'] * cols] + matrix[-max_rows//2:]
+            rows = max_rows
+        if cols > max_cols:
+            matrix = [row[:max_cols//2] + ['...'] + row[-max_cols//2:] for row in matrix]
+            cols = max_cols
 
         for row in range(rows):
             for col in range(cols):
                 if type(matrix[row][col]) is float:
-                    matrix[row][col] = round(matrix[row][col], 4)
+                    matrix[row][col] = round(matrix[row][col], precision)
         
         latex_code = '\\begin{bmatrix}\n'
         for i in range(rows):
@@ -114,7 +114,7 @@ class Matrix:
         
         return latex_code
     
-    def to_typst(self) -> str:
+    def to_typst(self, max_rows: int = 11, max_cols: int = 11, precision: int = 4) -> str:
         """
         Convert the matrix to Typst code for display purposes.
         """
@@ -122,19 +122,19 @@ class Matrix:
         rows = self.rows
         cols = self.cols
         
-        if rows > 20:
-            matrix = matrix[:10] + [['dots.v'] * cols] + matrix[-10:]
-            rows = 20
-        if cols > 20:
-            matrix = [row[:10] + ['dots.h'] + row[-10:] for row in matrix]
-            cols = 20
-        if self.rows > 20 and self.cols > 20:
-            matrix[10][10] = 'dots.down'
+        if rows > max_rows:
+            matrix = matrix[:max_rows//2] + [['dots.v'] * cols] + matrix[-max_rows//2:]
+            rows = max_rows
+        if cols > max_cols:
+            matrix = [row[:max_cols//2] + ['dots.h'] + row[-max_cols//2:] for row in matrix]
+            cols = max_cols
+        if self.rows > max_rows and self.cols > max_cols:
+            matrix[max_rows//2][max_cols//2] = 'dots.down'
 
         for row in range(rows):
             for col in range(cols):
                 if type(matrix[row][col]) is float:
-                    matrix[row][col] = round(matrix[row][col], 4)
+                    matrix[row][col] = round(matrix[row][col], precision)
 
         typst_code = 'mat('
         for i in range(rows):
