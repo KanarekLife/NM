@@ -22,8 +22,6 @@ function [xsolution,ysolution,iterations,xtab,xdif] = bisection_method(a,b,max_i
         end
 
         if abs(fun(c)) < ytolerance
-            xsolution = c;
-            ysolution = fun(c);
             break;
         elseif fun(a) * fun(c) < 0
              b = c;
@@ -31,7 +29,9 @@ function [xsolution,ysolution,iterations,xtab,xdif] = bisection_method(a,b,max_i
              a = c;
         end
     end
-
+    
+    xsolution = c;
+    ysolution = fun(c);
     xtab = xtab(1:iterations)';
     xdif = xdif(1:iterations-1)';
 end

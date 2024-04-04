@@ -23,15 +23,15 @@ function [xsolution,ysolution,iterations,xtab,xdif] = secant_method(a,b,max_iter
         end
         
         if abs(fun(c)) < ytolerance
-            xsolution = c;
-            ysolution = fun(c);
             break;
         end
 
         a = b;
         b = c;
     end
-
+    
+    xsolution = c;
+    ysolution = fun(c);
     xtab = xtab(1:iterations)';
     xdif = xdif(1:iterations-1)';
 end
