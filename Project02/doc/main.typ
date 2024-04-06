@@ -9,6 +9,16 @@
 #set page(
   paper: "a4",
   margin: (x: 1cm, y: 1cm),
+  numbering: "1/1",
+  footer: context [
+    #set text(size: 9pt)
+    *Układy równań liniowych* Stanisław Nieradko 193044
+    #h(1fr)
+    #counter(page).display(
+      "1 / 1",
+      both: true
+    )
+  ]
 )
 
 #align(center)[
@@ -44,7 +54,7 @@ Do zrealizowania zadania wykorzystany zostanie język programowania Python, śro
 
 Zgodnie z treścią #underline[Zadania A] na początku projektu utworzony został układ równań liniowych reprezentowany przez macierze $A$ i $B$. 
 
-Macierz $A$ jest macierz pasmową kwadratową o wymiarach $N #sym.times N$ dla $N = 9 c d = 944$, $a_1 = 5 + 3 = 5$ oraz $a_2 = a_3 = -1$:
+Macierz $A$ jest macierz pasmową kwadratową o wymiarach $N #sym.times N$ dla $N = 9 c d = 944$, $a_1 = 5 + 3 = 5$, $a_2 = a_3 = -1$. Wartości $a_i$ indukują wartości przekątnych o przesunięciu względem głównej przekątnej macierzy $op("offset") = i - 1$ (także $a_1$ to główna przekątna, $a_2$ to przekątne przesunięte o 1 względem głównej przekątnej itd.). Mamy też wektor $B$ o długości $N$, którego $n$-ty element jest równy $sin(n #sym.dot (f + 1)) = sin(n)$
 
 $ A = mat(5, -1, -1, 0, 0, dots.h, 0, 0, 0, 0, 0;
           -1, 5, -1, -1, 0, dots.h, 0, 0, 0, 0, 0;
@@ -57,13 +67,9 @@ $ A = mat(5, -1, -1, 0, 0, dots.h, 0, 0, 0, 0, 0;
           0, 0, 0, 0, 0, dots.h, -1, -1, 5, -1, -1;
           0, 0, 0, 0, 0, dots.h, 0, -1, -1, 5, -1;
           0, 0, 0, 0, 0, dots.h, 0, 0, -1, -1, 5;
-          ) $
-
-#pagebreak()
-
-oraz wektor $B$ o długości $N$, którego $n$-ty element jest równy $sin(n #sym.dot (f + 1)) = sin(n)$:
-
-$ B = mat(-0.7568;
+          )
+  op(#h(10pt))
+  B = mat(-0.7568;
           0.9894;
           -0.5366;
           -0.2879;
@@ -75,6 +81,8 @@ $ B = mat(-0.7568;
           0.8688;
           -0.1931;
           ) $
+
+#pagebreak()
 
 = 2. Porównanie metod rozwiązywania układów równań liniowych dla domyślnego układu równań
 
@@ -103,8 +111,6 @@ Dla podanego układu równań liniowych metoda Jacobiego wymagała 67 iteracji, 
   caption: [Porównanie normy residuum w zależności od iteracji dla metod Jacobiego i Gaussa-Seidela]
 )
 
-#pagebreak()
-
 = 3. Porównanie metod rozwiązywania układów równań liniowych dla alternatywnego układu równań
 
 W ramach #underline[Zadania C] i #underline[Zadanie D] wygenerowano alternatywny układ równań liniowych, który różni się od domyślnego układu równań liniowych z #link(<Wstęp>)[wstępu] jedynie wartościami elementów macierzy $A$. Jedyną zmianą były wartości głównej diagonalnej na $a_1 = 3$.
@@ -120,7 +126,22 @@ $ A = mat(3, -1, -1, 0, 0, dots.h, 0, 0, 0, 0, 0;
       0, 0, 0, 0, 0, dots.h, -1, -1, 3, -1, -1;
       0, 0, 0, 0, 0, dots.h, 0, -1, -1, 3, -1;
       0, 0, 0, 0, 0, dots.h, 0, 0, -1, -1, 3;
-      ) $
+      )
+  op(#h(10pt))
+  B = mat(-0.7568;
+          0.9894;
+          -0.5366;
+          -0.2879;
+          0.9129;
+          dots.v;
+          0.4675;
+          0.3635;
+          -0.9426;
+          0.8688;
+          -0.1931;
+          ) $
+
+#pagebreak()
 
 Dla takich danych poszczególne metody rozwiązywania układów równań liniowych osiągnęły następujące wyniki:
 
@@ -165,4 +186,8 @@ Jak widać na #link(<PorównanieCzasuObliczeńWZależnościOdRozmiaruMacierzyDla
 
 = 5. Podsumowanie
 
-TBD
+W ramach projektu zaimplementowane zostały metody Jacobiego i Gaussa-Seidela oraz metoda faktoryzacji LU. Przeprowadzone testy wydajnościowe pozwoliły na porównanie czasu wyznaczenia rozwiązań układów równań liniowych w zależności od zastosowanej metody oraz rozmiaru macierzy. Podczas testów wydajnościowych zauważono, że metoda faktoryzacji LU jest zdecydowanie wolniejsza od metod iteracyjnych (nawet 9 razy wolniejszy w przypadku macierzy $3000 #sym.times 3000$), co jest mocno odczuwalne dla dużych macierzy. Metoda Gaussa-Seidela jest szybsza od metody Jacobiego dla wszystkich rozmiarów macierzy. Mimo tego metoda faktoryzacji LU jest najdokładniejsza, co widać na przykładzie alternatywnego układu równań liniowych, który nie był zbieżny dla metod iteracyjnych.
+
+W ogólności zdaje się, że przy rozwiązywaniu dowolnej klasy układów równań liniowych należałoby na początek skorzystać z metody Gaussa-Seidela, a w przypadku braku zbieżności (co można wykryć poprzez zauważenie, że bład zamiast maleć przy kolejnych iteracjach wzrasta) zastosować metodę faktoryzacji LU. Powinno to pozwolić na uzyskanie dokładnych wyników w krótkim czasie tak długo jak układ równań jest zbieżny, oraz dać możliwość uzyskania wyników dla układów równań, które nie są zbieżne dla metod iteracyjnych.
+
+Ponadto warto zauważyć, że zastosowanie zewnętrznych bibliotek do obliczeń macierzowych (np. NumPy) lub zastosowanie szybszego języka do implementacji powinno pozwolić na znaczne przyspieszenie obliczeń, co jest szczególnie ważne dla dużych macierzy. Testowana implementacja była napisana w czystym języku Python, który nie jest językiem szybkim, co *znacząco* wpłynęło na czas obliczeń (zwłaszcza metody faktoryzacji LU, która zajęła nawet 20 min dla macierzy $3000 #sym.times 3000$).
