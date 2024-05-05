@@ -24,6 +24,20 @@ def read_nodes(file_path: str) -> List[Tuple[float, float]]:
 
     return to_tuple(pd.read_csv(file_path))
 
+def get_x_values(data: List[Tuple[float, float]]) -> List[float]:
+    """
+    Returns the x values from data.
+    """
+
+    return [x for x, _ in data]
+
+def get_y_values(data: List[Tuple[float, float]]) -> List[float]:
+    """
+    Returns the y values from data.
+    """
+
+    return [y for _, y in data]
+
 def linspace(start: float, end: float, n: int) -> List[float]:
     """
     Returns a list of n evenly spaced values between start and end.
