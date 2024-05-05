@@ -81,6 +81,8 @@ def read_nodes(file_path: str) -> List[Tuple[float, float]]:
 def cubic_interpolation(data: List[Tuple[float, float]], x_values: List[float]) -> List[float]:
     """
     Returns the values of the spline interpolation polynomial at x_values.
+
+    Tested with: https://tools.timodenk.com/cubic-spline-interpolation
     """
 
     number_of_sub_ranges = len(data) - 1
@@ -120,7 +122,7 @@ def cubic_interpolation(data: List[Tuple[float, float]], x_values: List[float]) 
     row_id += 1
 
     A[row_id][n - 2] = 2
-    A[row_id][n - 1] = 6 * (data[number_of_sub_ranges][0] - data[number_of_sub_ranges - 1][0])
+    A[row_id][n - 1] = 6 * (data[-1][0] - data[-2][0])
     row_id += 1
 
     x = A.solve(b).to_flat_list()
@@ -135,5 +137,5 @@ def cubic_interpolation(data: List[Tuple[float, float]], x_values: List[float]) 
                 found = True
                 break
         if not found:
-            results.append(results[-1])
+            results.append(results[-1])        
     return results
