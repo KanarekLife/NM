@@ -3,6 +3,27 @@ from typing import List, Tuple
 from matrix import Matrix
 import pandas as pd
 
+def to_tuple(data: pd.DataFrame) -> List[Tuple[float, float]]:
+    """
+    Converts a DataFrame to a list of tuples.
+    """
+
+    return [(row['Distance'], row['Height']) for _, row in data.iterrows()]
+
+def to_dataframe(data: List[Tuple[float, float]]) -> pd.DataFrame:
+    """
+    Converts a list of tuples to a DataFrame.
+    """
+
+    return pd.DataFrame(data, columns=['Distance', 'Height'])
+
+def read_nodes(file_path: str) -> List[Tuple[float, float]]:
+    """
+    Reads nodes from a CSV file.
+    """
+
+    return to_tuple(pd.read_csv(file_path))
+
 def linspace(start: float, end: float, n: int) -> List[float]:
     """
     Returns a list of n evenly spaced values between start and end.
@@ -25,9 +46,9 @@ def find_closest_nodes(nodes: List[Tuple[float, float]], correct_nodes: List[flo
     """
     Returns the closest nodes to correct_nodes from nodes.
     """
+
     result = []
     for node in correct_nodes:
-        # find closest node in nodes to node
         closest_node = min(nodes, key=lambda x: abs(x[0] - node))
         if closest_node not in result:
             result.append(closest_node)
@@ -56,27 +77,6 @@ def lagrange_interpolation(data: List[Tuple[float, float]], x_values: List[float
     """
 
     return [lagrange_interpolation_at_point(data, x) for x in x_values]
-
-def to_tuple(data: pd.DataFrame) -> List[Tuple[float, float]]:
-    """
-    Converts a DataFrame to a list of tuples.
-    """
-
-    return [(row['Distance'], row['Height']) for _, row in data.iterrows()]
-
-def to_dataframe(data: List[Tuple[float, float]]) -> pd.DataFrame:
-    """
-    Converts a list of tuples to a DataFrame.
-    """
-
-    return pd.DataFrame(data, columns=['Distance', 'Height'])
-
-def read_nodes(file_path: str) -> List[Tuple[float, float]]:
-    """
-    Reads nodes from a CSV file.
-    """
-
-    return to_tuple(pd.read_csv(file_path))
 
 def cubic_interpolation(data: List[Tuple[float, float]], x_values: List[float]) -> List[float]:
     """
