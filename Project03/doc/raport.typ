@@ -112,7 +112,7 @@ W ramach projektu wykonano analizę wyników interpolacji dla 5 zestawów danych
   caption: "Zestaw danych Chełm"
 )
 
-Pierwszy zestaw danych pochodzi z miasta Chełm, i zawiera 512 punktów. Punkty te ulegają delikatnym i płynnym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna przebiegać bez większych problemów.
+Pierwszy zestaw danych pochodzi z dzielnicy Chełm w Gdańsku, i zawiera 512 punktów. Punkty te ulegają delikatnym i płynnym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna przebiegać bez większych problemów.
 
 #figure(
   image("../plots/chelm/2_1_lagrange_linspace.png"),
