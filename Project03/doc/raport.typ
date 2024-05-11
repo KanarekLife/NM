@@ -212,7 +212,7 @@ Podsumowując - w przypadku zestawu danych Chełm, interpolacja funkcjami skleja
 
 Żadnym zaskoczeniem nie jest fakt, że zwiększenie ilości punktów pomiarowych znacząco poprawia jakość interpolacji, jednakże w przypadku interpolacji wielomianowej z równoodległymi węzłami, zbyt duża liczba punktów może prowadzić do efektu Rungego, uniemożliwiając niekiedy poprawne odwzorowanie funkcji.
 
-Rozłożenie punktów pomiarowych ma znaczący wpływ na jakość interpolacji, jednakże w przypadku interpolacji funkcjami sklejanymi trzeciego stopnia, rozmieszczenie punktów pomiarowych nie ma większego znaczenia, a interpolacja zawsze jest dokładna. W przypadku zestawu danych Chełm, łagość zmian wysokości pozwala na uzyskanie dokładnej interpolacji nawet przy niewielkiej liczbie punktów pomiarowych kosztem pewnego uproszczenia profilu terenu.
+Rozłożenie punktów pomiarowych ma znaczący wpływ na jakość interpolacji, jednakże w przypadku interpolacji funkcjami sklejanymi trzeciego stopnia, rozmieszczenie punktów pomiarowych nie ma większego znaczenia, a interpolacja zawsze jest dokładna. W przypadku zestawu danych Chełm, łagodność zmian wysokości pozwala na uzyskanie dokładnej interpolacji nawet przy niewielkiej liczbie punktów pomiarowych kosztem pewnego uproszczenia profilu terenu.
 
 #pagebreak()
 
