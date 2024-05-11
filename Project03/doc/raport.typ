@@ -230,7 +230,7 @@ Jak widać na przytoczonym wykresie interpolacja wielomianowa Lagrange'a z równ
   caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych Genoa-Rapallo"
 )
 
-Niestety z uwagi na profil terenu i gwałtowne zmiany wysokości, interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje niezadowalające wyniki. Widać oscylację na końcu profilu terenu, uwagi na duża liczbę gwałtownych zmian wysokości. Najlepszy wynik (choć nadal niezadowalający) metoda dała przy 52 punktach pomiarowych.
+Niestety z uwagi na profil terenu i gwałtowne zmiany wysokości, interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje niezadowalające wyniki. Widać oscylację na końcu profilu terenu, z uwagi na duża liczbę gwałtownych zmian wysokości. Najlepszy wynik (choć nadal niezadowalający) metoda dała przy 52 punktach pomiarowych.
 
 #figure(
   image("../plots/genoa_rapallo/cubic_spline.png", height: 300pt),
