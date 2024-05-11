@@ -1,28 +1,14 @@
 from math import cos, pi
-from typing import List, Tuple
+from typing import List, Tuple, Callable
 from matrix import Matrix
 import pandas as pd
-
-def to_tuple(data: pd.DataFrame) -> List[Tuple[float, float]]:
-    """
-    Converts a DataFrame to a list of tuples.
-    """
-
-    return [(row['Distance'], row['Height']) for _, row in data.iterrows()]
-
-def to_dataframe(data: List[Tuple[float, float]]) -> pd.DataFrame:
-    """
-    Converts a list of tuples to a DataFrame.
-    """
-
-    return pd.DataFrame(data, columns=['Distance', 'Height'])
 
 def read_nodes(file_path: str) -> List[Tuple[float, float]]:
     """
     Reads nodes from a CSV file.
     """
 
-    return to_tuple(pd.read_csv(file_path))
+    return [(row.iloc[0], row.iloc[1]) for _, row in pd.read_csv(file_path).iterrows()]
 
 def get_x_values(data: List[Tuple[float, float]]) -> List[float]:
     """
@@ -56,11 +42,14 @@ def chebyshev_nodes(start: float, end: float, n: int) -> List[float]:
 
     return [(start + end) / 2 + (end - start) / 2 * cos((2 * i + 1) * pi / (2 * n)) for i in range(n)][::-1]
 
-def find_closest_nodes(nodes: List[Tuple[float, float]], correct_nodes: List[float]) -> List[Tuple[float, float]]:
+def get_selection_points(nodes: List[Tuple[float, float]], strategy: Callable[[float, float, int], List[float]], n: int) -> List[Tuple[float, float]]:
     """
-    Returns the closest nodes to correct_nodes from nodes.
+    Returns the selection points based on the strategy.
     """
 
+    correct_nodes = strategy(nodes[0][0], nodes[-1][0], n)
+
+    # Find the closest nodes to correct_nodes from nodes.
     result = []
     for node in correct_nodes:
         closest_node = min(nodes, key=lambda x: abs(x[0] - node))
@@ -68,31 +57,34 @@ def find_closest_nodes(nodes: List[Tuple[float, float]], correct_nodes: List[flo
             result.append(closest_node)
     return result
 
-def lagrange_interpolation_at_point(data: List[Tuple[float, float]], x: float) -> float:
+def get_interpolation_points(nodes: List[Tuple[float, float]], n: int) -> List[float]:
     """
-    Returns the value of the Lagrange interpolation polynomial at x.
+    Returns the interpolation points.
     """
 
-    n = len(data)
-    result = 0.0
-    for i in range(n):
-        xi, yi = data[i]
-        term = yi
-        for j in range(n):
-            if j != i:
-                xj, _ = data[j]
-                term *= (x - xj) / (xi - xj)
-        result += term
-    return result
+    return linspace(nodes[0][0], nodes[-1][0], n)
 
 def lagrange_interpolation(data: List[Tuple[float, float]], x_values: List[float]) -> List[float]:
     """
     Returns the values of the Lagrange interpolation polynomial at x_values.
     """
 
-    return [lagrange_interpolation_at_point(data, x) for x in x_values]
+    y_values = []
+    for x in x_values:
+        n = len(data)
+        result = 0.0
+        for i in range(n):
+            xi, yi = data[i]
+            term = yi
+            for j in range(n):
+                if j != i:
+                    xj, _ = data[j]
+                    term *= (x - xj) / (xi - xj)
+            result += term
+        y_values.append(result)
+    return y_values
 
-def cubic_interpolation(data: List[Tuple[float, float]], x_values: List[float]) -> List[float]:
+def cubic_spline_interpolation(data: List[Tuple[float, float]], x_values: List[float]) -> List[float]:
     """
     Returns the values of the spline interpolation polynomial at x_values.
 

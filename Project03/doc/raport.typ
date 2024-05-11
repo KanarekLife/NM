@@ -61,17 +61,24 @@ a następnie złożeniu ich w jeden wielomian:
 
 $ F(x) = sum_(i=1)^(n+1) y_i phi.alt_i (x) $
 
-Metoda ta jest bardzo prosta w implementacji, jednakże ma swoje wady w postaci efektu Rungego, który polega na oscylacjach wielomianu na krańcach przedziału interpolacji, i może być zaobserwowany w dalszych częściach raportu.
+Metoda ta jest bardzo prosta w implementacji, jednakże ma swoje wady w postaci efektu Rungego, który polega na oscylacjach wynikowego wielomianu na krańcach przedziału interpolacji.
+
+#figure(
+  image("../plots/runge_phenomenon_example.png"),
+  caption: "Przykładowy efekt Rungego"
+)
+
+Efekt ten może zostać zniwelowany poprzez zmianę rozmieszczenia punktów interpolacji (np. przy pomocy węzłów Czebyszewa) co także zostało zaimplementowane w ramach projektu.
 
 == 1.2. Interpolacja funkcjami sklejanymi trzeciego stopnia
 
 Drugą zaimplementowaną metodą była interpolacja funkcjami sklejanymi trzeciego stopnia. Metoda ta polega na znalezieniu funkcji sklejanej, która przechodzi przez wszystkie punkty, a jej pochodne pierwszego i drugiego rzędu są ciągłe.
 
-Metoda ta polega na znalezieniu funkcji sklejanej w postaci:
+Sklejana funkcja trzeciego stopnia na przedziale $[x_i, x_(i+1)]$ ma postać:
 
 $ S_i (x) = a_i + b_i (x - x_i) + c_i (x - x_i)^2 + d_i (x - x_i)^3 $
 
-gdzie współczynniki $ a_i, b_i, c_i, d_i $ są znane dla każdego z przedziałów.
+gdzie współczynniki $a_i, b_i, c_i, d_i$ są znane dla każdego z przedziałów.
 
 W celu znalezienia współczynników, należy rozwiązać układ równań liniowych, który zbudowany jest na podstawie warunków ciągłości pierwszej i drugiej pochodnej funkcji sklejanej w każdym z punktów.
 
@@ -90,47 +97,84 @@ $ S_n ''(x_n) = 0 $
 
 Metoda ta jest bardziej skomplikowana w implementacji, jednakże pozwala na uzyskanie lepszych wyników, *bez efektu Rungego*.
 
-== 2. Efekt Rungego <Runge>
+== 2. Zestawy danych
 
-Wspomniany wcześniej efekt Rungego jest zjawiskiem, które występuje w interpolacji wielomianowej, polegającym na oscylacjach wielomianu na krańcach przedziału interpolacji. Jest to zjawisko, które występuje w przypadku interpolacji wielomianowej z równoodległymi węzłami, i jest wynikiem zbyt dużej liczby punktów interpolacji. Zjawisko to jest szczególnie widoczne w przypadku interpolacji wielomianowej Lagrange'a, gdzie oscylacje mogą być bardzo duże.
+W ramach projektu wykonano analizę wyników interpolacji dla paru zestawów danych pochodządzych z pliku `.zip` z danymi. Zestawy te różnią się między gwałtownością zmian wysokości, ich rozmieszczeniem oraz wartościami.
 
-#figure(
-  image("../plots/runge_phenomenon_example.png"),
-  caption: "Przykładowy efekt Rungego"
+Analizowane zestawy danych to:
+- `chelm.csv` - 512 punktów z dzielnicy Chełm w Gdańsku. Punkty te ulegają delikatnym i płynnym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna przebiegać bez większych problemów.\
+- `genoa_rapallo.csv` - 512 punktów z miasta Genoa-Rapallo. Punkty te ulegają gwałtownym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna być bardziej wymagająca. Na dodatek następuje gwałtowny spadek wysokości w końcowej części zestawu danych, co dodatkowo utrudnia interpolację.
+- `hel_yeah.csv` - 512 punktów nieznanego pochodzenia. Punkty te ulegają bardzo gwałtownym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna być nawet bardziej wymagająca.
+- `stale.csv` - 512 punktów nieznanego pochodzenia. Funkcja terenu jest bardzo płaska oraz delikatnie rośnie przez całą swoją długość, co powinno ułatwić interpolację.
+- `wielki_kanion.csv` - 512 punktów z Wielkiego Kanionu w Kolorado, USA. Funkcja terenu ulega gwałtownej zmianie wysokości w środku zestawu danych ale jest ona zdecydowanie prosztza niż w przypadku Genoa-Rapallo lub HelYeah.
+
+#grid(
+  columns: (1fr, 1fr),
+  rows: (auto, auto, auto),
+  gutter: 5pt,
+  figure(
+    image("../plots/chelm/original_function.png"),
+    caption: "Funkcja terenu dla zestawu danych Chełm"
+  ),
+  figure(
+    image("../plots/genoa_rapallo/original_function.png"),
+    caption: "Funkcja terenu dla zestawu danych Genoa-Rapallo"
+  ),
+  figure(
+    image("../plots/hel_yeah/original_function.png"),
+    caption: "Funkcja terenu dla zestawu danych HelYeah"
+  ),
+  figure(
+    image("../plots/stale/original_function.png"),
+    caption: "Funkcja terenu dla zestawu danych Stale"
+  ),
+  figure(
+    image("../plots/wielki_kanion/original_function.png"),
+    caption: "Funkcja terenu dla zestawu danych Wielki Kanion"
+  )
 )
 
-Efekt ten może zostać zniwelowany poprzez zmianę rozmieszczenia punktów interpolacji (np. przy pomocy węzłów Czebyszewa) lub zastosowanie innych metod interpolacji, takich jak funkcje sklejane.
+== 3. Podstawowa analiza wyników interpolacji
 
-== 3. Zestawy danych i wyniki interpolacji <Data>
+Podstawowa analiza wyników interpolacji dla każdego z zestawów danych polega na zbadaniu wpływu ilości punktów pomiarowych oraz ich rozmieszczenia na jakość interpolacji. Analiza została przeprowadzona dla zestawów `chelm.csv` oraz `genoa_rapallo.csv`. Analiza została przeprowadzone dla 11, 26, 52 oraz 103 punktów pomiarowych (z 512 łącznie).
 
-W ramach projektu wykonano analizę wyników interpolacji dla 5 zestawów danych pochodzących z przekazanego pliku `.zip` z danymi. Zestawy te różnią się między sobą liczbą punktów, ich rozmieszczeniem oraz wartościami.
-
-== 3.1. Zestaw danych Chełm
+Jak widać na umieszczonych dalej wykresach, liczba punktów pomiarowych ma znaczący wpływ na jakość interpolacji. W przypadku interpolacji wielomianowej Lagrange'a z równoodległymi węzłami, efekt Rungego jest bardzo widoczny już przy stosunkowo niewielkiej liczbie punktów pomiaru co ogranicza skuteczność tej metody. Zastosowanie węzłów Czebyszewa pozwala na uniknięcie efektu Rungego, jednakże interpolacja jest mniej dokładna niż w przypadku funkcji sklejanych oraz w przypadku zbyt dużej ilości punktów pomiarowych nadal może istnieć prawdopodobnieństwo wystąpienia efektu Rungego (co ciekawe podczas testów efekt ten nie występował przy 100 punktach pomiarowych). Najbardziej dokładna interpolacja została uzyskana przy użyciu funkcji sklejanych trzeciego stopnia.
 
 #figure(
-  image("../plots/chelm/1_original_data.png"),
-  caption: "Zestaw danych Chełm"
+  image("../plots/quality-by-number-of-selection-points/chelm.png"),
+  caption: "Wpływ ilości punktów pomiarowych na jakość interpolacji dla zestawu danych Chełm"
 )
 
-Pierwszy zestaw danych pochodzi z dzielnicy Chełm w Gdańsku, i zawiera 512 punktów. Punkty te ulegają delikatnym i płynnym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna przebiegać bez większych problemów.
-
 #figure(
-  image("../plots/chelm/2_1_lagrange_linspace.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a bez węzłów Czebyszewa"
+  image("../plots/quality-by-number-of-selection-points/genoa_rapallo.png"),
+  caption: "Wpływ ilości punktów pomiarowych na jakość interpolacji dla zestawu danych Genoa-Rapallo"
 )
 
-Jak widać na przytoczonym wykresie interpolacja wielomianowa Lagrange'a z równoodległymi węzłami rozjeżdża się już przy ok. 20 punktach pomiaru poprzez efekt Rungego.
+#pagebreak()
+
+== 4. Dokładniejsza analiza wyników interpolacji dla poszczególnych zestawów danych
+
+W dalszej części raportu zostaną przedstawione bardziej szczegółowe analizy wyników interpolacji dla każdego z zestawów danych. Analizy te będą zawierały wykresy interpolacji dla różnych metod oraz różnych parametrów interpolacji.
+
+== 4.1. Zestaw danych Chełm
 
 #figure(
-  image("../plots/chelm/2_1_lagrange_chebyshev.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa"
+  image("../plots/chelm/lagrange_linspace_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami zestawu danych Chełm"
 )
 
-Zastosowanie węzłów Czebyszewa pozwala na uniknięcie efektu Rungego, dzięki czemu interpolacja osiąga zadowalające wyniki już przy 50 punktach pomiaru.
+Jak widać na przytoczonym wykresie interpolacja wielomianowa Lagrange'a z równoodległymi węzłami rozjeżdża się już przy ok. 20 punktach pomiaru przez działanie efektu Rungego.
 
 #figure(
-  image("../plots/chelm/2_2_cubic_spline.png"),
-  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia"
+  image("../plots/chelm/lagrange_chebyshev_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych Chełm"
+)
+
+Zastosowanie węzłów Czebyszewa pozwala zazwyczaj na uniknięcie efektu Rungego, dzięki czemu interpolacja osiąga zadowalające wyniki już przy 50 punktach pomiaru. Niestety dla 103 punktów pomiarowych, interpolacja jest mniej dokładna niż w przypadku funkcji sklejanych, przez występujące na krańcach oscylacje.
+
+#figure(
+  image("../plots/chelm/cubic_spline.png", height: 300pt),
+  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia zestawu danych Chełm"
 )
 
 Interpolacja funkcjami sklejanymi trzeciego stopnia pozwala na uzyskanie jeszcze lepszych wyników interpolacji, bez efektu Rungego, dzięki czemu nawet przy 52 punktach pomiaru interpolacja jest bardzo dokładna.
@@ -139,120 +183,112 @@ Podsumowując - w przypadku zestawu danych Chełm, interpolacja funkcjami skleja
 
 Żadnym zaskoczeniem nie jest fakt, że zwiększenie ilości punktów pomiarowych znacząco poprawia jakość interpolacji, jednakże w przypadku interpolacji wielomianowej z równoodległymi węzłami, zbyt duża liczba punktów może prowadzić do efektu Rungego, uniemożliwiając niekiedy poprawne odwzorowanie funkcji.
 
-== 3.2. Zestaw danych Genoa-Rapallo
+Rozłożenie punktów pomiarowych ma znaczący wpływ na jakość interpolacji, jednakże w przypadku interpolacji funkcjami sklejanymi trzeciego stopnia, rozmieszczenie punktów pomiarowych nie ma większego znaczenia, a interpolacja zawsze jest dokładna. W przypadku zestawu danych Chełm, łagość zmian wysokości pozwala na uzyskanie dokładnej interpolacji nawet przy niewielkiej liczbie punktów pomiarowych kosztem pewnego uproszczenia profilu terenu.
+
+#pagebreak()
+
+== 4.2. Zestaw danych Genoa-Rapallo
 
 #figure(
-  image("../plots/genoa_rapallo/1_original_data.png"),
-  caption: "Zestaw danych Geo-Rapallo"
+  image("../plots/genoa_rapallo/lagrange_linspace_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami zestawu danych Genoa-Rapallo"
 )
 
-Drugi zestaw danych pochodzi z miasta Genoa-Rapallo, i także zawiera 512 punktów. Punkty te ulegają gwałtownym zmianom wysokości w stosunku do siebie, dzięki czemu interpolacja powinna być bardziej wymagająca. Na dodatek następuje gwałtowny spadek wysokości w końcowej części zestawu danych.
+Jak widać na przytoczonym wykresie interpolacja wielomianowa Lagrange'a z równoodległymi węzłami nie radzi sobie z gwałtownymi zmianami wysokości, dając niezadowalające wyniki interpolacji.
 
 #figure(
-  image("../plots/genoa_rapallo/2_1_lagrange_linspace.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a bez węzłów Czebyszewa"
+  image("../plots/genoa_rapallo/lagrange_chebyshev_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych Genoa-Rapallo"
 )
 
-Jak widać na przytoczonym wykresie interpolacja wielomianowa Lagrange'a z równoodległymi węzłami rozjeżdża się już przy ok. 15 punktach pomiaru poprzez efekt Rungego. Widać także że metoda ta nie radzi sobie z gwałtownymi zmianami wysokości i znacząco upraszcza profil terenu.
+Niestety z uwagi na profil terenu i gwałtowne zmiany wysokości, interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje niezadowalające wyniki. Widać oscylację na końcu profilu terenu, uwagi na duża liczbę gwałtownych zmian wysokości. Najlepszy wynik (choć nadal niezadowalający) metoda dała przy 52 punktach pomiarowych.
 
 #figure(
-  image("../plots/genoa_rapallo/2_1_lagrange_chebyshev.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa"
+  image("../plots/genoa_rapallo/cubic_spline.png", height: 300pt),
+  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia zestawu danych Genoa-Rapallo"
 )
 
-Zastosowanie węzłów Czebyszewa pozwala na uniknięcie efektu Rungego (na większości funkcji), jednakże metoda ta nadal nie radzi sobie z gwałtownymi zmianami wysokości. Interpolacja daje jedynie uproszczony profil terenu oraz widać oscylację na końcu profilu terenu nawet przy 100 punktach pomiaru.
+Interpolacja funkcjami sklejanymi trzeciego stopnia daje znacznie lepsze wyniki. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Niestety z uwagi na trudne warunki terenowe, interpolacja nie jest idealna, jednakże jest znacznie lepsza niż w przypadku interpolacji wielomianowej. Funkcja przypomina oryginalną, jednakże widać pominięcie minimum lokalnych i pominięcie gwałtownych wahań wysokości.
+
+== 4.3. Zestaw danych HelYeah
 
 #figure(
-  image("../plots/genoa_rapallo/2_2_cubic_spline.png"),
-  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia"
+  image("../plots/hel_yeah/lagrange_linspace_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami zestawu danych HelYeah"
 )
 
-Interpolacja funkcjami sklejanymi trzeciego stopnia daje znacznie lepsze wyniki. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Niestety z uwagi na trudne warunki terenowe, interpolacja nie jest idealna, jednakże jest znacznie lepsza niż w przypadku interpolacji wielomianowej.
-
-W przypadku zestawu danych Genoa-Rapallo, interpolacja funkcjami sklejanymi trzeciego stopnia nadal daje najlepsze wyniki, zarówno pod względem dokładności, jak i wydajności. Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa lub bez, daje niezadowalające wyniki pod względem dokładności odwzorowania funkcji oraz nie radzi sobie z gwałtownymi zmianami wysokości. W przypadku tego zestawu danych, efekt Rungego widoczny jest nawet przy zastosowaniu węzłów Czebyszewa, co pokazuje jak trudne warunki terenowe mogą wpłynąć na jakość interpolacji.
-
-Interpolacja funkcjami sklejanymi trzeciego stopnia, mimo iż nie uzyskała idealnych wyników, pozwala na uzyskanie najdokładniejszej interpolacji, nawet w trudnych warunkach terenowych.
-
-== 3.3 Pozostałe zestawy danych
-
-== 3.3.1. Zestaw danych HelYeah
+Podobnie jak w przypadku zestawu danych Genoa-Rapallo, interpolacja wielomianowa Lagrange'a z równoodległymi węzłami nie radzi sobie z gwałtownymi zmianami wysokości, dając niezadowalające wyniki interpolacji.
 
 #figure(
-  image("../plots/hel_yeah/1_original_data.png"),
-  caption: "Zestaw danych HelYeah"
+  image("../plots/hel_yeah/lagrange_chebyshev_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych HelYeah"
 )
+
+Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje niezadowalające wyniki. Widać oscylację na końcu profilu terenu, uwagi na duża liczbę gwałtownych zmian wysokości. Najlepszy wynik (choć nadal niezadowalający) metoda dała przy 52 punktach pomiarowych, kosztem pominięcia gwałtownych zmian wysokości w końcowej części funkcji.
 
 #figure(
-  image("../plots/hel_yeah/2_1_lagrange_linspace.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a bez węzłów Czebyszewa"
+  image("../plots/hel_yeah/cubic_spline.png", height: 300pt),
+  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia zestawu danych HelYeah"
 )
+
+Najlepszy wynik znowu daje interpolacja funkcjami sklejanymi trzeciego stopnia. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Niestety z uwagi na trudne warunki terenowe, interpolacja nie jest idealna, jednakże jest znacznie lepsza niż w przypadku interpolacji wielomianowej.
+
+#pagebreak()
+
+== 4.4. Zestaw danych Stale
 
 #figure(
-  image("../plots/hel_yeah/2_1_lagrange_chebyshev.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa"
+  image("../plots/stale/lagrange_linspace_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami zestawu danych Stale"
 )
+
+Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami daje zadowalające wyniki dla niskiej ilości punktów pomiarowych, jednakże przez efekt Rungego interpolacja rozjeżda się już przy 11 punktach pomiarowych.
 
 #figure(
-  image("../plots/hel_yeah/2_2_cubic_spline.png"),
-  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia"
+  image("../plots/stale/lagrange_chebyshev_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych Stale"
 )
 
-== 3.3.2. Zestaw danych Stale
+Zastosowanie węzłów Czebyszewa pozwala na uniknięcie efektu Rungego, dzięki czemu interpolacja osiąga zadowalające wyniki, pomijając wynik dla 103 punktów pomiarowych, gdzie występują oscylacje na krańcach profilu terenu.
 
 #figure(
-  image("../plots/stale/1_original_data.png"),
-  caption: "Zestaw danych Stale"
+  image("../plots/stale/cubic_spline.png", height: 300pt),
+  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia zestawu danych Stale"
 )
+
+Interpolacja funkcjami sklejanymi trzeciego stopnia pozwala na uzyskanie równie dobrych wyników, co w przypadku interpolacji wielomianowej Lagrange'a z węzłami Czebyszewa. Interpolacja jest dokładna, chociaż kosztem dłuższego czasu obliczeń niż w przypadku interpolacji wielomianowej dając ten sam doskonały wynik.
+
+W przypadku tak prostych funkcji terenu, interpolacja funkcjami sklejanymi trzeciego stopnia nie jest konieczna i interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa daje równie dobre wyniki, jednakże jest to znacznie bardziej pewna metoda.
+
+== 4.5. Zestaw danych Wielki Kanion
 
 #figure(
-  image("../plots/stale/2_1_lagrange_linspace.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a bez węzłów Czebyszewa"
+  image("../plots/wielki_kanion/lagrange_linspace_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami zestawu danych Wielki Kanion"
 )
+
+Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami znowu daje niezadowalające wyniki. Widać efekt Rungego, który uniemożliwia poprawne odwzorowanie funkcji terenu.
 
 #figure(
-  image("../plots/stale/2_1_lagrange_chebyshev.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa"
+  image("../plots/wielki_kanion/lagrange_chebyshev_nodes.png", height: 300pt),
+  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa zestawu danych Wielki Kanion"
 )
+
+Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje niezadowalające wyniki. Najlepszy wynik (choć znacznie upraszczając profil terenu) metoda dała przy 52 punktach pomiarowych. Niestety widać efekt Rungego na krańcach profilu terenu przy 103 punktach pomiarowych.
 
 #figure(
-  image("../plots/stale/2_2_cubic_spline.png"),
-  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia"
+  image("../plots/wielki_kanion/cubic_spline.png", height: 300pt),
+  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia zestawu danych Wielki Kanion"
 )
 
-== 3.3.3. Zestaw danych Wielki Kanion
+Interpolacja funkcjami sklejanymi trzeciego stopnia daje najlepsze wyniki. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Z uwagi na warunki terenowe pominięte zostały małe wypukłości na profilu terenu, jednakże poza tym interpolacja jest dokładna.
 
-#figure(
-  image("../plots/wielki_kanion/1_original_data.png"),
-  caption: "Zestaw danych Wielki Kanion"
-)
-
-#figure(
-  image("../plots/wielki_kanion/2_1_lagrange_linspace.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a bez węzłów Czebyszewa"
-)
-
-#figure(
-  image("../plots/wielki_kanion/2_1_lagrange_chebyshev.png"),
-  caption: "Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa"
-)
-
-#figure(
-  image("../plots/wielki_kanion/2_2_cubic_spline.png"),
-  caption: "Interpolacja funkcjami sklejanymi trzeciego stopnia"
-)
-
-== 4. Podsumowanie
+== 5. Podsumowanie
 
 W ramach projektu zaimplementowano dwie metody interpolacji funkcji - wielomianową Lagrange'a oraz funkcjami sklejanymi trzeciego stopnia. Obie metody zostały przetestowane na 5 różnych zestawach danych o różnych cechach, w celu zbadania zachowania obu metod w różnych warunkach.
 
-Wyniki pokazują, że interpolacja funkcjami sklejanymi trzeciego stopnia daje najlepsze wyniki, zarówno pod względem dokładności, jak i wydajności. Metoda ta pozwala na uzyskanie dokładnej interpolacji nawet w trudnych warunkach terenowych, bez efektu Rungego.
+Wyniki pokazują, że interpolacja funkcjami sklejanymi trzeciego stopnia daje najlepsze wyniki, zarówno pod względem dokładności, jak i wydajności. Metoda ta pozwala na uzyskanie najlepszej interpolacji w każdych warunkach. Mimo, iż metoda ta upraszcza profil terenu w przypadku bardziej skomplikowanych funkcji, to jest to zazwyczaj niezauważalne dla użytkownika. Metoda ta nie ma efektu Rungego, co pozwala na uzyskanie dokładnej interpolacji przy mniejszej liczbie punktów pomiarowych niż w przypadku interpolacji wielomianowej.
 
-W przypadku metody interpolacji funkcjami sklejanymi trzeciego stopnia, zwiększanie liczby punktów pomiarowych zawsze poprawia jakość interpolacji, jednakże nawet przy niewielkiej liczbie punktów interpolacja jest stosunkowo dokładna.
+Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje zadowalające wyniki. Jest ona mniej dokładna niż funkcje sklejane, lecz w przypadku prostych funkcji terenu, daje równie dobre wyniki. Z nieznanej przyczyny, w przypadku testów, efekt Rungego występował przy 103 punktach pomiarowych, co jest zaskakujące z uwagi na brak tego efektu przy np. 100 punktach pomiarowych.
 
-Metoda wielomianowa Lagrange'a potrafi dawać zadowalające wyniki dla niewielkiej liczby punktów pomiarowych w przypadku równoodległych węzłów pomiarowych lub większej liczby punktów w przypadku węzłów Czebyszewa. Niestety metoda ta jest mniej dokładna niż funkcje sklejane, a efekt Rungego jest bardzo widoczny już przy stosunkowo niewielkiej liczbie punktów pomiaru przy zastosowaniu równoodległych węzłów lub przy szybko zmieniającej się funkcji terenu.
-
-Mowiąc o rozmieszczeniu punktów pomiarowych, w przypadku interpolacji wielomianowej Lagrange'a, zastosowanie węzłów Czebyszewa pozwala na uniknięcie efektu Rungego i (zazwyczaj) poprawia on wynik interpolacji kosztem jej dokładności w okolicy środka analizowanej funkcji. W przypadku interpolacji funkcjami sklejanymi trzeciego stopnia, rozmieszczenie punktów pomiarowych nie ma większego znaczenia, a interpolacja zawsze jest dokładna.
-
-Przy potencjalnym zastosowaniu węzłów Czebyszewa w interpolacji wielomianowej Lagrange'a, warto zwrócić uwagę na to, że jego zastosowanie wymusza odrzucenie niektórych punktów pomiarowych, co może prowadzić do uproszczenia profilu terenu i nie być praktyczne w przypadku mniejszych datasetów.
-
-Podsumowując - w przypadku interpolacji profilu wysokościowego terenu, zaleca się stosowanie interpolacji funkcjami sklejanymi trzeciego stopnia, ze względu na ich dokładność i brak efektu Rungego. W przypadku braku możliwości zastosowania funkcji sklejanych, interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa daje zadowalające wyniki, jednakże jest mniej dokładna niż funkcje sklejane. Metoda ta powinna dać zadowalające wyniki w większości przypadków, aczkolwiek gdy planujemy analizować dynamicznie zmieniającą się funkcję terenu, zaleca się zastosowanie funkcji sklejanych.
+Interpolacja wielomianowa Lagrange'a z równoodległymi węzłami jest najmniej dokładna, a efekt Rungego jest bardzo widoczny już przy stosunkowo niewielkiej liczbie punktów pomiaru co ogranicza skuteczność tej metody. Metoda ta może być stosowana jedynie w przypadku najprostszych funkcji terenu o małej liczbie punktów pomiarowych.
