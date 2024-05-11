@@ -1,4 +1,4 @@
-#let creationDate = datetime(year: 2024, month: 05, day: 05)
+#let creationDate = datetime(year: 2024, month: 05, day: 09)
 
 #set document(
   title: "Metody Numeryczne - Projekt 3: Aproksymacja profilu wysokościowego terenu",
@@ -80,13 +80,13 @@ Warunki te są zdefiniowane jako:
 1. W punkcie $x_i$ wartość funkcji sklejanej jest równa wartości funkcji interpolowanej:
 $ S_i (x_i) = y_i $
 
-2. Dla granic przedziałów $[x_i, x_{i+1}]$ pochodne pierwsze i drugie funkcji sklejanej są równe:
-$ S_i'(x_{i+1}) = S_{i+1}'(x_{i+1}) $
-$ S_i''(x_{i+1}) = S_{i+1}''(x_{i+1}) $
+2. Dla granic przedziałów $[x_i, x_(i+1)]$ pochodne pierwsze i drugie funkcji sklejanej są równe:
+$ S_i '(x_(i+1)) = S_(i+1) '(x_(i+1)) $
+$ S_i ''(x_(i+1)) = S_(i+1) ''(x_(i+1)) $
 
 3. Dla punktów skrajnych pochodne drugie są równe zeru:
-$ S_1''(x_1) = 0 $
-$ S_n''(x_n) = 0 $
+$ S_1 ''(x_1) = 0 $
+$ S_n ''(x_n) = 0 $
 
 Metoda ta jest bardziej skomplikowana w implementacji, jednakże pozwala na uzyskanie lepszych wyników, *bez efektu Rungego*.
 
