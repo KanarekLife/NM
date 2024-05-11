@@ -21,21 +21,50 @@
   ]
 )
 
-#align(center)[
-  #stack(
-    dir: ttb,
-    text(size: 24pt, weight: "semibold")[Aproksymacja profilu wysokościowego terenu],
-    v(10pt),
-    text(size: 14pt)[Metody Numeryczne - Projekt 3],
-    v(20pt),
-    text(size: 12pt)[Stanisław Nieradko 193044],
-    v(10pt),
-    text(size: 12pt)[#creationDate.display()]
-  )
+#show figure.caption: it => [
+  #if it.supplement == [Figure] [
+    Rysunek  #it.counter.display()#it.separator #it.body
+  ] else if it.supplement == [Table] [
+    Tabela  #it.counter.display()#it.separator #it.body
+  ] else [
+    #it.supplement #it.numbering#it.separator #it.body
+  ]
 ]
 
+#set heading(numbering: "1.1")
 
-= 1. Wstęp <Wstęp>
+#show outline.entry.where(level: 1): it => {
+  v(12pt, weak: true)
+  strong(it)
+}
+
+#align(horizon)[
+  #align(center)[
+    #stack(
+      dir: ttb,
+      text(size: 24pt, weight: "semibold")[Aproksymacja profilu wysokościowego terenu],
+      v(10pt),
+      text(size: 14pt)[Metody Numeryczne - Projekt 3],
+      v(20pt),
+      text(size: 12pt)[Stanisław Nieradko 193044],
+      v(10pt),
+      text(size: 12pt)[#creationDate.display()]
+    )
+  ]
+]
+
+#pagebreak()
+
+#outline(
+    title: "Spis treści",
+    indent: auto
+)
+
+
+#pagebreak()
+
+
+= Wstęp
 
 Celem projektu jest zaimplementowanie oraz porównanie algorytmów interpolacji funkcji na przykładzie aproksymacji profilu wysokościowego terenu.
 
@@ -49,7 +78,7 @@ Implementacja została wykonana w języku Python, bez wykorzystania zewnętrznyc
 
 W ramach projektu porównane zostaną wyniki interpolacji dla 5 różnych zestawów danych o różnych cechach, w celu zbadania zachowania obu metod w różnych warunkach. Ponadto zostaną zbadane różnice wynikające z różnych parametrów interpolacji, takich jak liczba punktów czy ich rozmieszczenie.
 
-== 1.1. Interpolacja wielomianowa Lagrange'a
+== Interpolacja wielomianowa Lagrange'a
 
 Pierwszą zaimplementowaną metodą była interpolacja wielomianowa Lagrange'a. Metoda ta polega na znalezieniu wielomianu stopnia n-1, który przechodzi przez n punktów. 
 
@@ -70,7 +99,7 @@ Metoda ta jest bardzo prosta w implementacji, jednakże ma swoje wady w postaci 
 
 Efekt ten może zostać zniwelowany poprzez zmianę rozmieszczenia punktów interpolacji (np. przy pomocy węzłów Czebyszewa) co także zostało zaimplementowane w ramach projektu.
 
-== 1.2. Interpolacja funkcjami sklejanymi trzeciego stopnia
+== Interpolacja funkcjami sklejanymi trzeciego stopnia
 
 Drugą zaimplementowaną metodą była interpolacja funkcjami sklejanymi trzeciego stopnia. Metoda ta polega na znalezieniu funkcji sklejanej, która przechodzi przez wszystkie punkty, a jej pochodne pierwszego i drugiego rzędu są ciągłe.
 
@@ -97,7 +126,7 @@ $ S_n ''(x_n) = 0 $
 
 Metoda ta jest bardziej skomplikowana w implementacji, jednakże pozwala na uzyskanie lepszych wyników, *bez efektu Rungego*.
 
-== 2. Zestawy danych
+= Zestawy danych
 
 W ramach projektu wykonano analizę wyników interpolacji dla paru zestawów danych pochodządzych z pliku `.zip` z danymi. Zestawy te różnią się między gwałtownością zmian wysokości, ich rozmieszczeniem oraz wartościami.
 
@@ -134,7 +163,7 @@ Analizowane zestawy danych to:
   )
 )
 
-== 3. Podstawowa analiza wyników interpolacji
+= Podstawowa analiza wyników interpolacji
 
 Podstawowa analiza wyników interpolacji dla każdego z zestawów danych polega na zbadaniu wpływu ilości punktów pomiarowych oraz ich rozmieszczenia na jakość interpolacji. Analiza została przeprowadzona dla zestawów `chelm.csv` oraz `genoa_rapallo.csv`. Analiza została przeprowadzone dla 11, 26, 52 oraz 103 punktów pomiarowych (z 512 łącznie).
 
@@ -152,11 +181,11 @@ Jak widać na umieszczonych dalej wykresach, liczba punktów pomiarowych ma znac
 
 #pagebreak()
 
-== 4. Dokładniejsza analiza wyników interpolacji dla poszczególnych zestawów danych
+= Dokładniejsza analiza wyników interpolacji dla poszczególnych zestawów danych
 
 W dalszej części raportu zostaną przedstawione bardziej szczegółowe analizy wyników interpolacji dla każdego z zestawów danych. Analizy te będą zawierały wykresy interpolacji dla różnych metod oraz różnych parametrów interpolacji.
 
-== 4.1. Zestaw danych Chełm
+== Zestaw danych Chełm
 
 #figure(
   image("../plots/chelm/lagrange_linspace_nodes.png", height: 300pt),
@@ -187,7 +216,7 @@ Rozłożenie punktów pomiarowych ma znaczący wpływ na jakość interpolacji, 
 
 #pagebreak()
 
-== 4.2. Zestaw danych Genoa-Rapallo
+== Zestaw danych Genoa-Rapallo
 
 #figure(
   image("../plots/genoa_rapallo/lagrange_linspace_nodes.png", height: 300pt),
@@ -210,7 +239,7 @@ Niestety z uwagi na profil terenu i gwałtowne zmiany wysokości, interpolacja w
 
 Interpolacja funkcjami sklejanymi trzeciego stopnia daje znacznie lepsze wyniki. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Niestety z uwagi na trudne warunki terenowe, interpolacja nie jest idealna, jednakże jest znacznie lepsza niż w przypadku interpolacji wielomianowej. Funkcja przypomina oryginalną, jednakże widać pominięcie minimum lokalnych i pominięcie gwałtownych wahań wysokości.
 
-== 4.3. Zestaw danych HelYeah
+== Zestaw danych HelYeah
 
 #figure(
   image("../plots/hel_yeah/lagrange_linspace_nodes.png", height: 300pt),
@@ -235,7 +264,7 @@ Najlepszy wynik znowu daje interpolacja funkcjami sklejanymi trzeciego stopnia. 
 
 #pagebreak()
 
-== 4.4. Zestaw danych Stale
+== Zestaw danych Stale
 
 #figure(
   image("../plots/stale/lagrange_linspace_nodes.png", height: 300pt),
@@ -260,7 +289,7 @@ Interpolacja funkcjami sklejanymi trzeciego stopnia pozwala na uzyskanie równie
 
 W przypadku tak prostych funkcji terenu, interpolacja funkcjami sklejanymi trzeciego stopnia nie jest konieczna i interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa daje równie dobre wyniki, jednakże jest to znacznie bardziej pewna metoda.
 
-== 4.5. Zestaw danych Wielki Kanion
+== Zestaw danych Wielki Kanion
 
 #figure(
   image("../plots/wielki_kanion/lagrange_linspace_nodes.png", height: 300pt),
@@ -283,7 +312,7 @@ Interpolacja wielomianowa Lagrange'a z węzłami Czebyszewa również daje nieza
 
 Interpolacja funkcjami sklejanymi trzeciego stopnia daje najlepsze wyniki. Profil terenu jest dokładniejszy, a gwałtowne zmiany wysokości nie wpływają na jakość interpolacji. Z uwagi na warunki terenowe pominięte zostały małe wypukłości na profilu terenu, jednakże poza tym interpolacja jest dokładna.
 
-== 5. Podsumowanie
+= Podsumowanie
 
 W ramach projektu zaimplementowano dwie metody interpolacji funkcji - wielomianową Lagrange'a oraz funkcjami sklejanymi trzeciego stopnia. Obie metody zostały przetestowane na 5 różnych zestawach danych o różnych cechach, w celu zbadania zachowania obu metod w różnych warunkach.
 
